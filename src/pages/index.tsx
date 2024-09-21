@@ -1,53 +1,63 @@
 import * as React from "react";
 import User from "../components/User";
 import Layout from "../components/Layout";
-import { hot } from 'react-hot-loader';
-import logo from '@assets/logo.svg';
+import { hot } from "react-hot-loader";
 import Student from "../Student";
-let users = requireAll(require.context('../../contributors/', false, /\.yml$/));
 
-function requireAll(r:any): Student[] { 
-  return r.keys().map((element:string) => r(element));
-} 
+interface ContributorsProps {
+  users: Student[];
+}
 
-const headerStyles = {
-  maxWidth: `450px`,
-  marginBottom: `1.45rem`,
-  paddingTop: 40,
-};
-
-const titleStyles: any = {
-  display: "inline",
-  fontSize: 30,
-  fontWeight: "bold",
-  padding: "5px  10px",
-  boxShadow: `0px 131.961px 263.922px rgba(3, 3, 3, 0.2)`,
-  borderRadius: `7.18104px`,
-  color: "#FFF",
-  textAlign: "center",
+const Contributors: React.FC<ContributorsProps> = ({ users }) => {
+  return (
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 py-24 px-14 mx-auto max-w-screen-xl">
+      {users?.map((node: Student, i: number) => (
+        <User {...node} key={i} />
+      ))}
+    </div>
+  );
 };
 
 const IndexPage: React.FC = () => {
+  function requireAll(r: any): Student[] {
+    return r.keys().map((element: string) => r(element));
+  }
+
+  const [users, setUsers] = React.useState([]);
+  const [isLoading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    setUsers(
+      requireAll(require.context("../../contributors/", false, /\.yml$/))
+    );
+  }, []);
+
+  React.useEffect(() => {
+    setLoading(users?.length > 0 ? true : false);
+  }, [users]);
+
   return (
     <Layout>
-      <div style={headerStyles}>
-          <img src={logo} title='1337 Contributors' />
+      <div className="bg-gray-1000">
+        <div className=" mx-auto max-w-screen-xl flex flex-col text-center items-center p-28 ">
+          <h2 className="font-sora text-md md:text-lg lg:text-xl mb-4 text-gray-500">
+            Our Contributors
+          </h2>
+          <h1 className="font-sora text-4xl md:text-5xl lg:text-6xl">
+            The <span className="text-effect-1">Brilliant Minds</span> Powering{" "}
+            <span className="text-effect-1">1337's Journey</span> of{" "}
+            <span className="text-effect-1">Innovation</span>
+          </h1>
+        </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <h1 style={titleStyles}>Our Contributors</h1>
-      </div>
-      <Contributors />
+
+      {isLoading ? (
+        <Contributors users={users} />
+      ) : (
+        <div className="flex justify-center pt-20">hmmm...</div>
+      )}
     </Layout>
   );
 };
 
-const Contributors = () => {
-    return (
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {users.map((node: any, i: number) => (
-          <User {...node} key={i} index={i} />
-        ))}
-      </div>
-    )
-};
 export default hot(module)(IndexPage);
