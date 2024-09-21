@@ -1,81 +1,57 @@
 import React, { FC } from "react";
+import avatar from "@assets/default-avatar.png";
 
 type Props = {
   firstName: string;
   lastName: string;
   github: string;
   bio: string;
-  index: number;
 };
 
-const ContainerStyles = {
-  width: "50%",
-  maxWidth: `300px`,
-  minWidth: "260px",
-  margin: "auto",
-  marginBottom: `1.45rem`,
-  marginTop: 0,
-};
-const AvatarStyles: any = {
-  position: "relative",
-  maxWidth: `300px`,
-  minWidth: "260px",
-  margin: "auto",
-  display: "flex",
-  justifyContent: "center",
-};
+const User: FC<Props> = ({ firstName, lastName, github, bio }) => {
+  firstName = firstName.toLowerCase();
+  lastName = lastName.toLowerCase();
 
-const userNameStyles: any = {
-  display: "inline",
-  position: "absolute",
-  minWidth: 120,
-  bottom: 0,
-  left: "38%",
-  fontSize: 19,
-  fontWeight: "bold",
-  padding: "5px  10px",
-  background: `linear-gradient(90deg, #ea472c 0%, rgba(234,71,44,1) 53%, rgba(234,71,44,0.8130602582830007) 100%)`,
-  border: `2.63922px solid #212121`,
-  boxSizing: "border-box",
-  boxShadow: `0px 131.961px 263.922px rgba(0, 0, 0, 0.2)`,
-  borderRadius: `7.5px`,
-  transform: `rotate(-4deg)`,
-  color: "#FFF",
-};
-const imgStyle: any = {
-  borderRadius: "50%",
-  border: "3px #e3462b solid",
-};
-
-const bioStyles: any = {
-  fontSize: 15,
-  textAlign: "center",
-  color: "#ffffff",
-  fontWeight: "bold",
-  padding: "0px 20px",
-};
-
-const User: FC<Props> = ({ firstName, lastName, github, bio, index }) => (
-  <div style={ContainerStyles}>
-    <a href={`https://github.com/${github}`} target="_blank">
-      <div style={AvatarStyles}>
-        {/* <Avatar github={github} index={index} /> */}
-        <img
-          style={imgStyle}
-          // transform="translate(-.01) scale(.00106)"
-          width="260"
-          height="255"
-          src={`https://github.com/${github}.png?size=${400 + index}`}
-        ></img>
-
-        <p style={userNameStyles}>
-          {firstName} <br /> {lastName}
+  return (
+    <a
+      href={github ? `https://github.com/${github}` : "#"}
+      target={github ? "_blank" : "_self"}
+    >
+      <div
+        className="flex flex-col items-center py-10 px-8 rounded  relative z-0 overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 border border-gray-900 hover:border hover:border-gray-800"
+        id="card"
+      >
+        <div
+          className="w-60 aspect-square rounded-full overflow-hidden  mb-[-28px] bg-gray-1000 border-4 border-gray-1000"
+          id="avatar"
+        >
+          <img
+            src={github ? `https://github.com/${github}.png` : avatar}
+            onError={(e) => {
+              e.currentTarget.src = avatar;
+            }}
+            alt={`${firstName} ${lastName}'s avatar`}
+            className=" w-full h-full"
+          />
+        </div>
+        <h3 className="text-xl bg-gray-1000 py-1 px-2 rounded capitalize  font-sora">
+          <span className="text-gray-400 mr-2">
+            <i className="fa-solid fa-less-than"></i>
+          </span>
+          {firstName + " " + lastName}
+          <span className="text-gray-400 font-semibold  ml-2">
+            /<i className="fa-solid fa-greater-than"></i>
+          </span>
+        </h3>
+        <h4 className="text-lg capitalize mb-5">
+          <span className="text-sm text-gray-300 underline">@{github}</span>
+        </h4>
+        <p className="text-sm text-center text-muted-foreground flex items-center justify-center">
+          <span className="mx-2">{bio}</span>
         </p>
       </div>
     </a>
-
-    <p style={bioStyles}>{bio}</p>
-  </div>
-);
+  );
+};
 
 export default User;
